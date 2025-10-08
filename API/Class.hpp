@@ -444,9 +444,15 @@ namespace IL2CPP
         {
             if (!m_pMethod)
             {
-
-                TReturn m_tDefault = {}; // void goes like illegal use of type. (use void* and fuck them)
-                return m_tDefault;
+                if constexpr (std::is_void_v<TReturn>)
+                {
+                    return; 
+                }
+                else 
+                {
+                    TReturn m_tDefault = {}; // void goes like illegal use of type. (use void* and fuck them)
+                    return m_tDefault;
+                }
             }
 
             return CallMethod<TReturn>(m_pMethod, tArgs...);
