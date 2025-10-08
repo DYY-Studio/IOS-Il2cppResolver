@@ -4,6 +4,7 @@
 #include <dlfcn.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <mach-o/dyld.h>
 
 // C++ Headers
 #include <cmath>
