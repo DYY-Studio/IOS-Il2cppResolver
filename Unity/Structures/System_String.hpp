@@ -10,46 +10,59 @@ namespace Unity
 {
     struct System_String : il2cppObject
     {
-        int32_t m_iLength;       // 0x8
-        wchar_t m_wString[1024]; // 0xC
+        int32_t _stringLength;       // 0x8
+        
+        union
+        {
+            uint16_t _firstChar; // 0x14
+            char _firstByte;     // 0x14
+            wchar_t _chars[1];   // 0x14, 柔性数组成员 (或大小为1的数组，用于指针运算)
+        };
         
         void Clear()
         {
             if (this == nullptr) return;
             
-            memset(m_wString, 0, static_cast<size_t>(m_iLength) * 2);
-            m_iLength = 0;
+            memset((wchar_t*)&this->_chars[0], 0, static_cast<size_t>(_stringLength) * 2);
+            this->_stringLength = 0;
         }
         
-        wchar_t* ToWideString()
+        const wchar_t* ToWideChars()
         {
-            return m_wString;
+            return (const wchar_t*)&this->_chars[0];
         }
         
         int32_t ToLength()
         {
-            return m_iLength;
+            return this->_stringLength;
+        }
+
+        NSString* ToNSString()
+        {
+            if ((this == nullptr) || (this->ToWideChars() == nullptr) || (this->_stringLength == 0))
+                return @"";
+            
+            const wchar_t* wideChars = this->ToWideChars();
+            int32_t len = this->ToLength();
+
+            const unichar* uniChars = (const unichar*)wideChars;
+            
+            NSString* nsString = [[NSString alloc] initWithCharacters:uniChars length:(NSUInteger)len];
+            
+            return nsString;
         }
         
         std::string ToString()
         {
-            if ((this == nullptr) || (m_wString == nullptr) || (m_iLength == 0))
+            if ((this == nullptr) || (this->ToWideChars() == nullptr) || (this->ToLength() == 0))
                 return "";
             
-            std::string retStr;
-            mbstate_t state = mbstate_t();
-            char buf[MB_CUR_MAX];
-            
-            for (int32_t i = 0; i < m_iLength; ++i)
-            {
-                size_t ret = wcrtomb(buf, m_wString[i], &state);
-                if (ret == (size_t)-1)
-                {
-                    return "";
-                }
-                retStr.append(buf, ret);
-            }
-            return retStr;
+            NSString* nsString = this->ToNSString();
+
+            if (!nsString) return "";
+            std::string result([nsString UTF8String]);
+
+            return result;
         }
     };
 }

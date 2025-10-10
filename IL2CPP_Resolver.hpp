@@ -13,6 +13,10 @@
 #include <thread>
 #include <vector>
 #include <cstdint>
+#include <locale>
+
+// Apple Objective-C Headers
+#include <Foundation/Foundation.h>
 
 //#include <iostream>
 #include <unordered_map>
