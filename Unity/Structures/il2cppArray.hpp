@@ -9,6 +9,11 @@ namespace Unity
         uintptr_t m_uMaxLength = 0;
         T* m_pValues = nullptr;
 
+        static il2cppArray<T>* Create(il2cppClass* m_pClass, uintptr_t m_uMaxLength)
+        {
+            return reinterpret_cast<il2cppArray<T>*(IL2CPP_CALLING_CONVENTION)(il2cppClass*, uintptr_t)>(IL2CPP::Functions.m_ArrayNew)(m_pClass, m_uMaxLength);
+        }
+
         uintptr_t GetData()
         {
             return reinterpret_cast<uintptr_t>(&m_pValues);

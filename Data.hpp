@@ -39,9 +39,13 @@ namespace IL2CPP
 		void* m_TypeGetObject = nullptr;
 
 		void* m_pObjectNew = nullptr;
+		void* m_MethodGetObject = nullptr;
 		void* m_MethodGetParamName = nullptr;
 		void* m_MethodGetParam = nullptr;
 		void* m_ClassFromIl2cppType = nullptr;
+
+		void* m_ArrayGetClass = nullptr;
+		void* m_ArrayNew = nullptr;
 
 		void* m_FieldStaticGetValue = nullptr;
 		void* m_FieldStaticSetValue = nullptr;
