@@ -525,5 +525,52 @@ namespace IL2CPP
                 std::cout << "Destroyed GameObject with tag " << tag << ": " << gameObject->GetName()->ToString() << "\n";
             }
         }
+
+        IL2CPP::CClass* GetMethodObject(Unity::il2cppMethodInfo* m_pMethod) {
+            return reinterpret_cast<IL2CPP::CClass*(IL2CPP_CALLING_CONVENTION)(Unity::il2cppMethodInfo*)>(IL2CPP::Functions.m_MethodGetObject)(m_pMethod);
+        }
+
+        Unity::il2cppMethodInfo* InflateGenericMethod(Unity::il2cppMethodInfo* m_pMethod, std::initializer_list<const char*> m_vTemplateTypes) {
+            if (!m_pMethod) {
+                std::cerr << "Failed to find method" << "\n";
+                return nullptr;
+            }
+            
+            IL2CPP::CClass* genericMethodObject = GetMethodObject(m_pMethod);
+            if (!genericMethodObject) {
+                std::cerr << "Failed to get method object" << "\n";
+                return nullptr;
+            }
+
+            Unity::il2cppClass* typeClass = IL2CPP::Class::Find("System.Type");
+            if (!typeClass) {
+                std::cerr << "Failed to find class: System.Type" << "\n";
+                return nullptr;
+            }
+
+            Unity::il2cppArray<Unity::il2cppObject*>* typeArray = Unity::il2cppArray<Unity::il2cppObject*>::Create(typeClass, m_vTemplateTypes.size());
+
+            const char** m_pParamTypes = const_cast<const char**>(m_vTemplateTypes.begin());
+            for (int i = 0; i < static_cast<int>(m_vTemplateTypes.size()); i++) {
+                Unity::il2cppClass* paramClass = IL2CPP::Class::Find(m_pParamTypes[i]);
+                if (!paramClass) {
+                    std::cerr << "[IL2CPP Tweak] Failed to find class: " << m_pParamTypes[i] << "\n";
+                    return nullptr;
+                }
+                Unity::il2cppObject* type = IL2CPP::Class::GetSystemType(paramClass);
+                typeArray->At(i) = type;
+            }
+
+            IL2CPP::CClass* inflatedMethod = genericMethodObject->CallMethodSafe<IL2CPP::CClass*>(
+                "MakeGenericMethod",
+                typeArray
+            );
+            if (!inflatedMethod) {
+                std::cerr << "[IL2CPP Tweak] Failed to inflate method" << "\n";
+                return nullptr;
+            }
+
+            return reinterpret_cast<Unity::il2cppMethodInfo*>(inflatedMethod->GetMemberValue<intptr_t>("mhandle"));
+        }
     }
 }

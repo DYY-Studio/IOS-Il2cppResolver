@@ -215,6 +215,15 @@ namespace IL2CPP
                 return pMethod->m_pMethodPointer;
             }
 
+            Unity::il2cppMethodInfo* GetMethod(const char* m_pClassName, const char* m_pMethodName, int m_iArgs = -1)
+            {
+                Unity::il2cppClass* m_pClass = Find(m_pClassName);
+                if (m_pClass)
+                    return GetMethod(m_pClass, m_pMethodName, m_iArgs);
+
+                return nullptr;
+            }
+
 
             void* GetMethodPointer(const char* m_pClassName, const char* m_pMethodName, int m_iArgs = -1)
             {
@@ -311,6 +320,7 @@ namespace IL2CPP
                 }
                 return nullptr;
             }
+            
             void* GetMethodPointer(const char* m_pClassName, const char* m_pMethodName, std::initializer_list<const char*> m_vNames)
             {
                 Unity::il2cppMethodInfo* pMethod = GetMethod(m_pClassName, m_pMethodName, m_vNames);
