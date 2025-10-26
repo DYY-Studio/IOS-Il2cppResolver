@@ -554,7 +554,7 @@ namespace IL2CPP
             for (int i = 0; i < static_cast<int>(m_vTemplateTypes.size()); i++) {
                 Unity::il2cppClass* paramClass = IL2CPP::Class::Find(m_pParamTypes[i]);
                 if (!paramClass) {
-                    std::cerr << "[IL2CPP Tweak] Failed to find class: " << m_pParamTypes[i] << "\n";
+                    std::cerr << "Failed to find class: " << m_pParamTypes[i] << "\n";
                     return nullptr;
                 }
                 Unity::il2cppObject* type = IL2CPP::Class::GetSystemType(paramClass);
@@ -566,11 +566,27 @@ namespace IL2CPP
                 typeArray
             );
             if (!inflatedMethod) {
-                std::cerr << "[IL2CPP Tweak] Failed to inflate method" << "\n";
+                std::cerr << "Failed to inflate method" << "\n";
                 return nullptr;
             }
 
             return reinterpret_cast<Unity::il2cppMethodInfo*>(inflatedMethod->GetMemberValue<intptr_t>("mhandle"));
+        }
+
+        void* GetInflatedMethodPointer(Unity::il2cppMethodInfo* m_pMethod, std::initializer_list<const char*> m_vTemplateTypes) {
+            Unity::il2cppMethodInfo* inflatedMethod = InflateGenericMethod(m_pMethod, m_vTemplateTypes);
+            if (!inflatedMethod) {
+                return nullptr;
+            }
+            return inflatedMethod->m_pMethodPointer;
+        }
+
+        void* GetInflatedMethodPointer(const char* m_pClassName, const char* m_pMethodName, std::initializer_list<const char*> m_vTemplateTypes, std::initializer_list<const char*> m_vArgsTypes) {
+            Unity::il2cppMethodInfo* m_pMethod = IL2CPP::Class::Utils::GetMethod(m_pClassName, m_pMethodName, m_vArgsTypes);
+            if (!m_pMethod) {
+                return nullptr;   
+            }
+            return GetInflatedMethodPointer(m_pMethod, m_vTemplateTypes);
         }
     }
 }
