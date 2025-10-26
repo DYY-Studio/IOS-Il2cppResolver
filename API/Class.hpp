@@ -273,13 +273,19 @@ namespace IL2CPP
                 return reinterpret_cast<Unity::il2cppClass * (IL2CPP_CALLING_CONVENTION)(void*)>(Functions.m_ClassFromIl2cppType)(type);
             }
 
-            Unity::il2cppMethodInfo* GetMethod(const char* m_pClassName, const char* m_pMethodName, std::initializer_list<const char*> m_vNames) {
+            /*!
+            * GetMethod
+            * @param m_pClassName - Class name
+            * @param m_pMethodName - Method name
+            * @param m_vArgsTypes - List of param type class names (without namespaces)
+            */
+            Unity::il2cppMethodInfo* GetMethod(const char* m_pClassName, const char* m_pMethodName, std::initializer_list<const char*> m_vArgsTypes) {
                 Unity::il2cppClass* m_pClass = Find(m_pClassName);
                 if (!m_pClass)
                     return nullptr;
 
-                int m_iNamesCount = static_cast<int>(m_vNames.size());
-                const char** m_pNames = const_cast<const char**>(m_vNames.begin());
+                int m_iNamesCount = static_cast<int>(m_vArgsTypes.size());
+                const char** m_pNames = const_cast<const char**>(m_vArgsTypes.begin());
 
                 void* m_pMethodIterator = nullptr;
                 while (1)
@@ -309,7 +315,11 @@ namespace IL2CPP
                     Unity::il2cppParameterInfo* m_pCurrentParameters = m_pMethod->m_pParameters;
                     for (int i = 0; m_iNamesCount > i; ++i)
                     {
-                        if (strcmp(m_pCurrentParameters->m_pName, m_pNames[i]) != 0)
+                        Unity::il2cppType** m_pCurrentParameterTypes = m_pCurrentParameters->m_pParameterType;
+                        if (!m_pCurrentParameterTypes) 
+                            break;
+
+                        if (strcmp(m_pCurrentParameterTypes->m_pName, m_pNames[i]) != 0)
                             break;
 
                         m_pCurrentParameters++; // m_pCurrentParameters += sizeof(Unity::il2cppParameterInfo);
@@ -321,9 +331,15 @@ namespace IL2CPP
                 return nullptr;
             }
             
-            void* GetMethodPointer(const char* m_pClassName, const char* m_pMethodName, std::initializer_list<const char*> m_vNames)
+            /*!
+            * GetMethodPointer
+            * @param m_pClassName - Class name
+            * @param m_pMethodName - Method name
+            * @param m_vArgsTypes - List of param type class names (without namespaces)
+            */
+            void* GetMethodPointer(const char* m_pClassName, const char* m_pMethodName, std::initializer_list<const char*> m_vArgsTypes)
             {
-                Unity::il2cppMethodInfo* pMethod = GetMethod(m_pClassName, m_pMethodName, m_vNames);
+                Unity::il2cppMethodInfo* pMethod = GetMethod(m_pClassName, m_pMethodName, m_vArgsTypes);
                 if (!pMethod) return nullptr;
                 
                 return pMethod->m_pMethodPointer;
