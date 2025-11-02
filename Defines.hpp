@@ -7,6 +7,7 @@
 #define IL2CPP_CLASS_GET_METHODS						IL2CPP_RStr("il2cpp_class_get_methods")
 #define IL2CPP_CLASS_GET_METHOD_FROM_NAME_EXPORT		IL2CPP_RStr("il2cpp_class_get_method_from_name")
 #define IL2CPP_CLASS_GET_PROPERTY_FROM_NAME_EXPORT		IL2CPP_RStr("il2cpp_class_get_property_from_name")
+#define IL2CPP_CLASS_GET_NESTED_TYPES_EXPORT            IL2CPP_RStr("il2cpp_class_get_nested_types")
 #define IL2CPP_CLASS_GET_TYPE_EXPORT					IL2CPP_RStr("il2cpp_class_get_type")
 #define IL2CPP_DOMAIN_GET_EXPORT						IL2CPP_RStr("il2cpp_domain_get")
 #define IL2CPP_DOMAIN_GET_ASSEMBLIES_EXPORT				IL2CPP_RStr("il2cpp_domain_get_assemblies")

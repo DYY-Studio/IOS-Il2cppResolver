@@ -188,6 +188,7 @@ namespace IL2CPP
                 { IL2CPP_CLASS_GET_METHODS,                            &Functions.m_ClassGetMethods },
                 { IL2CPP_CLASS_GET_METHOD_FROM_NAME_EXPORT,            &Functions.m_ClassGetMethodFromName },
                 { IL2CPP_CLASS_GET_PROPERTY_FROM_NAME_EXPORT,        &Functions.m_ClassGetPropertyFromName },
+                { IL2CPP_CLASS_GET_NESTED_TYPES_EXPORT,                &Functions.m_ClassGetNestedClasses },
                 { IL2CPP_CLASS_GET_TYPE_EXPORT,                        &Functions.m_ClassGetType },
                 { IL2CPP_DOMAIN_GET_EXPORT,                            &Functions.m_DomainGet },
                 { IL2CPP_DOMAIN_GET_ASSEMBLIES_EXPORT,                &Functions.m_DomainGetAssemblies },

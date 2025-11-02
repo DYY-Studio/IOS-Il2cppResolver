@@ -42,6 +42,23 @@ namespace IL2CPP
             }
         }
 
+        Unity::il2cppClass* GetNestedClasses(Unity::il2cppClass* m_pParentClass, void** m_pIterator) {
+            return reinterpret_cast<Unity::il2cppClass * (IL2CPP_CALLING_CONVENTION)(void*, void**)>(Functions.m_ClassGetNestedClasses)(m_pParentClass, m_pIterator);
+        }
+
+        void FetchNestedClasses(Unity::il2cppClass* m_pClass, std::vector<Unity::il2cppClass*>* m_pVector, void* m_pIterator = nullptr) {
+            m_pVector->clear();
+
+            while (1)
+            {
+                Unity::il2cppClass* m_pNestedClass = GetNestedClasses(m_pClass, &m_pIterator);
+                if (!m_pNestedClass)
+                    break;
+                    
+                m_pVector->emplace_back(m_pNestedClass);
+            }
+        }
+
         Unity::il2cppType* GetType(Unity::il2cppClass* m_pClass)
         {
             return reinterpret_cast<Unity::il2cppType * (IL2CPP_CALLING_CONVENTION)(void*)>(Functions.m_ClassGetType)(m_pClass);
@@ -408,6 +425,26 @@ namespace IL2CPP
 
                 return m_pMethodPointer;
             }
+
+            Unity::il2cppClass* GetNestedClass(Unity::il2cppClass* m_pClass, const char* m_pNestedClassName, void* m_pIterator = nullptr) {
+                Unity::il2cppClass* m_pNestedClass = nullptr;
+
+                while((m_pNestedClass = GetNestedClasses(m_pClass, &m_pIterator))) {
+                    if (strcmp(m_pNestedClass->m_pName, m_pNestedClassName) == 0) {
+                        break;
+                    }
+                }
+
+                return m_pNestedClass;
+            }
+
+            Unity::il2cppClass* GetNestedClass(const char* m_pClassName, const char* m_pNestedClassName, void* m_pIterator = nullptr) {
+                Unity::il2cppClass* m_pClass = Find(m_pClassName);
+                if (!m_pClass)
+                    return nullptr;
+                
+                return GetNestedClass(m_pClass, m_pNestedClassName, m_pIterator);
+            }
         }
     }
 
@@ -445,6 +482,11 @@ namespace IL2CPP
         void FetchMethods(std::vector<Unity::il2cppMethodInfo*>* m_pVector, void* m_pMethodIterator = nullptr)
         {
             Class::FetchMethods(m_Object.m_pClass, m_pVector, m_pMethodIterator);
+        }
+
+        void FetchNestedClasses(std::vector<Unity::il2cppClass*>* m_pVector, void* m_pNestedClassIterator = nullptr)
+        {
+            Class::FetchNestedClasses(m_Object.m_pClass, m_pVector, m_pNestedClassIterator);
         }
 
         void* GetMethodPointer(const char* m_pMethodName, int m_iArgs = -1)

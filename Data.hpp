@@ -17,6 +17,7 @@ namespace IL2CPP
 		void* m_ClassGetMethodFromName = nullptr;
 		void* m_ClassGetPropertyFromName = nullptr;
 		void* m_ClassGetType = nullptr;
+		void* m_ClassGetNestedClasses = nullptr;
 
 		void* m_DomainGet = nullptr;
 		void* m_DomainGetAssemblies = nullptr;
