@@ -43,13 +43,14 @@ For more usage check the [wiki](https://github.com/Batchhh/IOS-Il2cppResolver/wi
 * Need `C++ 20`! (for `void` return template)
 * Fix `System.String` handle by using `Foundation` (Better deal with `wchar` than pure CPP)
 * Add a convenient function to make `Il2cppArray` (`Unity::il2cppArray::Create`)
-* Add functions for inflating generic methods (`IL2CPP::Helper::InflateGenericMethod`), inspired by [frida-il2cpp-bridge](https://github.com/vfsfitvnm/frida-il2cpp-bridge)
+* Add functions for inflating generic methods / classes (`IL2CPP::Helper::InflateGenericMethod/InflateGenericClass`), inspired by [frida-il2cpp-bridge](https://github.com/vfsfitvnm/frida-il2cpp-bridge)
+* Add functions to find nested classes (`IL2CPP::Class::Utils::GetNestedClass`), inspired by [frida-il2cpp-bridge](https://github.com/vfsfitvnm/frida-il2cpp-bridge)
 
 ## Authors
 
 - [@sneakyevil](https://www.github.com/sneakyevil) Base source
 - [@Batchh](https://www.github.com/Batchhh) Modified and adapted for IOS usage
-- [@DYY-Studio](https://www.github.com/DYY-Studio) GenericMethod support and better `System.String` handle
+- [@DYY-Studio](https://www.github.com/DYY-Studio) Generic method/class support and better `System.String` handle
 
 
 ## License
