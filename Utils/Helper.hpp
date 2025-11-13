@@ -25,7 +25,7 @@ namespace IL2CPP
         }
 
         template <typename Ret, typename... Args>
-        Ret InvokeStaticMethod(const char* className, const char* methodName, Args... args)
+        Ret InvokeStaticMethodRVA(const char* className, const char* methodName, Args... args)
         {
             auto il2cppClass = IL2CPP::Class::Find(className);
             if (!il2cppClass)
@@ -45,7 +45,27 @@ namespace IL2CPP
         }
 
         template <typename Ret, typename... Args>
-        Ret InvokeStaticMethod(const std::string &className, const std::string &methodName, Args... args)
+        Ret InvokeStaticMethod(const char* className, const char* methodName, Args... args)
+        {
+            auto il2cppClass = IL2CPP::Class::Find(className);
+            if (!il2cppClass)
+            {
+                std::cerr << "Class " << className << " not found.\n";
+                return Ret();
+            }
+
+            void* methodPointer = IL2CPP::Class::Utils::GetMethodPointer(il2cppClass, methodName, sizeof...(args));
+            if (!methodPointer)
+            {
+                std::cerr << "Method " << methodName << " not found in class " << className << ".\n";
+                return Ret();
+            }
+
+            return reinterpret_cast<Ret (*)(Args...)>(methodPointer)(args...);
+        }
+
+        template <typename Ret, typename... Args>
+        Ret InvokeStaticMethodRVA(const std::string &className, const std::string &methodName, Args... args)
         {
             auto il2cppClass = IL2CPP::Class::Find(className.c_str());
             if (!il2cppClass)
@@ -55,6 +75,26 @@ namespace IL2CPP
             }
 
             uint64_t methodPointer = IL2CPP::Class::Utils::GetMethodPointerRVA(il2cppClass, methodName.c_str(), sizeof...(args));
+            if (!methodPointer)
+            {
+                std::cerr << "Method " << methodName << " not found in class " << className << ".\n";
+                return Ret();
+            }
+
+            return reinterpret_cast<Ret (*)(Args...)>(methodPointer)(args...);
+        }
+
+        template <typename Ret, typename... Args>
+        Ret InvokeStaticMethod(const std::string &className, const std::string &methodName, Args... args)
+        {
+            auto il2cppClass = IL2CPP::Class::Find(className.c_str());
+            if (!il2cppClass)
+            {
+                std::cerr << "Class " << className << " not found.\n";
+                return Ret();
+            }
+
+            void* methodPointer = IL2CPP::Class::Utils::GetMethodPointer(il2cppClass, methodName.c_str(), sizeof...(args));
             if (!methodPointer)
             {
                 std::cerr << "Method " << methodName << " not found in class " << className << ".\n";
