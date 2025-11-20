@@ -545,9 +545,14 @@ namespace IL2CPP
         template<typename T>
         T GetPropertyValue(const char* m_pPropertyName)
         {
-            Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
-            if (pProperty && pProperty->m_pGet)
-                return reinterpret_cast<T(UNITY_CALLING_CONVENTION)(void*)>(pProperty->m_pGet->m_pMethodPointer)(this);
+            #ifndef UNITY_VERSION_2022_3_62F2
+                Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
+                if (pProperty && pProperty->m_pGet)
+                    return reinterpret_cast<T(UNITY_CALLING_CONVENTION)(void*)>(pProperty->m_pGet->m_pMethodPointer)(this);
+            #else
+                char m_pGetterName[] = "get_";
+                return CallMethodSafe<T>(strcat(m_pGetterName, m_pPropertyName));
+            #endif
 
             T tDefault = {};
             return tDefault;
@@ -556,9 +561,14 @@ namespace IL2CPP
         template<typename T>
         void SetPropertyValue(const char* m_pPropertyName, T m_tValue)
         {
-            Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
-            if (pProperty && pProperty->m_pSet)
-                return reinterpret_cast<void(UNITY_CALLING_CONVENTION)(void*, T)>(pProperty->m_pSet->m_pMethodPointer)(this, m_tValue);
+            #ifndef UNITY_VERSION_2022_3_62F2
+                Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
+                if (pProperty && pProperty->m_pSet)
+                    return reinterpret_cast<void(UNITY_CALLING_CONVENTION)(void*, T)>(pProperty->m_pSet->m_pMethodPointer)(this, m_tValue);
+            #else
+                char m_pSetterName[] = "set_";
+                CallMethodSafe<void, T>(strcat(m_pSetterName, m_pPropertyName), m_tValue);
+            #endif
         }
 
         template<typename T>

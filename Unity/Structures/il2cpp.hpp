@@ -48,6 +48,9 @@ namespace Unity
         void* m_pGenericClass;
         void* m_pTypeDefinition;
         void* m_pInteropData;
+#ifdef UNITY_VERSION_2022_3_62F2
+        il2cppClass* m_pClass;
+#endif
         void* m_pFields;
         void* m_pEvents;
         void* m_pProperties;
@@ -55,8 +58,10 @@ namespace Unity
         il2cppClass** m_pNestedTypes;
         il2cppClass** m_ImplementedInterfaces;
         void* m_pInterfaceOffsets;
+#ifndef UNITY_VERSION_2022_3_62F2
         void* m_pStaticFields;
         void* m_pRGCTX;
+#endif
     };
 
     struct il2cppObject
@@ -142,10 +147,14 @@ namespace Unity
         unsigned short m_uFlags2;
         unsigned short m_uSlot;
         unsigned char m_uArgsCount;
+#ifndef UNITY_VERSION_2022_3_62F2
         unsigned char m_uGeneric : 1;
         unsigned char m_uInflated : 1;
         unsigned char m_uWrapperType : 1;
         unsigned char m_uMarshaledFromNative : 1;
+#else
+        unsigned char bitflags;
+#endif
     };
 
     struct il2cppPropertyInfo

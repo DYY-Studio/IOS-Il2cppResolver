@@ -27,6 +27,11 @@
     // #define UNITY_VERSION_2022_3_8F1
 #endif
 
+#ifndef UNITY_VERSION_2022_3_62F2
+    // if Unity version is equal or greater than 2022.3.62f2 uncomment this define.
+    // #define UNITY_VERSION_2022_3_62F2
+#endif
+
 // IL2CPP Defines
 
 // Disable Asserts
@@ -162,18 +167,22 @@ namespace IL2CPP
             IL2CPP_ASSERT(*m_Address != nullptr && "Couldn't resolve export!");
             return (*m_Address);
         }
-        
-        bool Initialize()
+
+        bool Initialize(std::unordered_map<const char*, void*>& m_ExportResolved)
         {
             bool m_InitExportResolved = false;
-            for (int i = 0; m_eExportObfuscationType::MAX > i; ++i)
-            {
-                m_ExportObfuscation = static_cast<m_eExportObfuscationType>(i);
-                if (ResolveExport(IL2CPP_INIT_EXPORT))
+            if (!m_ExportResolved.contains(IL2CPP_INIT_EXPORT) || !m_ExportResolved[IL2CPP_INIT_EXPORT]) {
+                for (int i = 0; m_eExportObfuscationType::MAX > i; ++i)
                 {
-                    m_InitExportResolved = true;
-                    break;
+                    m_ExportObfuscation = static_cast<m_eExportObfuscationType>(i);
+                    if (ResolveExport(IL2CPP_INIT_EXPORT))
+                    {
+                        m_InitExportResolved = true;
+                        break;
+                    }
                 }
+            } else {
+                m_InitExportResolved = true;
             }
             
             IL2CPP_ASSERT(m_InitExportResolved && "Couldn't resolve il2cpp_init!");
@@ -215,8 +224,13 @@ namespace IL2CPP
             
             for (auto& m_ExportPair : m_ExportMap)
             {
-                if (!ResolveExport_Boolean(m_ExportPair.second, &m_ExportPair.first[0]))
-                    return false;
+                if (!m_ExportResolved.contains(m_ExportPair.first)) {
+                    if (!ResolveExport_Boolean(m_ExportPair.second, &m_ExportPair.first[0])) {
+                        return false;
+                    }
+                } else {
+                    *m_ExportPair.second = m_ExportResolved[m_ExportPair.first];
+                }
             }
             
             // Unity APIs
@@ -232,6 +246,11 @@ namespace IL2CPP
             IL2CPP::SystemTypeCache::Initializer::PreCache();
             
             return true;
+        }
+
+        bool Initialize() {
+            std::unordered_map<const char*, void*> m_ExportResolved;
+            return Initialize(m_ExportResolved); 
         }
     }
     
@@ -266,6 +285,18 @@ namespace IL2CPP
         if (!UnityAPI::Initialize())
             return false;
 
+        return true;
+    }
+
+    bool Initialize(void* GameAssemblyHandle, std::unordered_map<const char*, void*>& m_ExportResolved) {
+        if (GameAssemblyHandle != nullptr)
+            Globals.m_GameFramework = GameAssemblyHandle;
+        else
+            return false;
+        
+        if (!UnityAPI::Initialize(m_ExportResolved))
+            return false;
+        
         return true;
     }
     
