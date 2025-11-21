@@ -148,7 +148,7 @@ namespace Unity
         unsigned char m_uWrapperType : 1;
         unsigned char m_uMarshaledFromNative : 1;
 #else
-        unsigned char bitflags;
+        unsigned char m_uBitflags;
 #endif
     };
 
