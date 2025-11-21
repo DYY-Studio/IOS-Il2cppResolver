@@ -48,7 +48,7 @@ namespace Unity
         void* m_pGenericClass;
         void* m_pTypeDefinition;
         void* m_pInteropData;
-#ifdef UNITY_VERSION_2022_3_62F2
+#ifdef UNITY_VERSION_2022_3_8F1
         il2cppClass* m_pClass;
 #endif
         void* m_pFields;
@@ -58,10 +58,8 @@ namespace Unity
         il2cppClass** m_pNestedTypes;
         il2cppClass** m_ImplementedInterfaces;
         void* m_pInterfaceOffsets;
-#ifndef UNITY_VERSION_2022_3_62F2
         void* m_pStaticFields;
         void* m_pRGCTX;
-#endif
     };
 
     struct il2cppObject

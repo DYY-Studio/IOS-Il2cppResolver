@@ -550,8 +550,9 @@ namespace IL2CPP
                 if (pProperty && pProperty->m_pGet)
                     return reinterpret_cast<T(UNITY_CALLING_CONVENTION)(void*)>(pProperty->m_pGet->m_pMethodPointer)(this);
             #else
-                char m_pGetterName[] = "get_";
-                return CallMethodSafe<T>(strcat(m_pGetterName, m_pPropertyName));
+                std::string m_pGetterName("get_");
+                m_pGetterName.append(m_pPropertyName);
+                return CallMethodSafe<T>(m_pGetterName.c_str());
             #endif
 
             T tDefault = {};
@@ -566,8 +567,9 @@ namespace IL2CPP
                 if (pProperty && pProperty->m_pSet)
                     return reinterpret_cast<void(UNITY_CALLING_CONVENTION)(void*, T)>(pProperty->m_pSet->m_pMethodPointer)(this, m_tValue);
             #else
-                char m_pSetterName[] = "set_";
-                CallMethodSafe<void, T>(strcat(m_pSetterName, m_pPropertyName), m_tValue);
+                std::string m_pSetterName("set_");
+                m_pSetterName.append(m_pPropertyName);
+                CallMethodSafe<void, T>(m_pSetterName.c_str(), m_tValue);
             #endif
         }
 
