@@ -48,9 +48,6 @@ namespace Unity
         void* m_pGenericClass;
         void* m_pTypeDefinition;
         void* m_pInteropData;
-#ifdef UNITY_VERSION_2022_3_8F1
-        il2cppClass* m_pClass;
-#endif
         void* m_pFields;
         void* m_pEvents;
         void* m_pProperties;

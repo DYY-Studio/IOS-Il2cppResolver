@@ -545,15 +545,15 @@ namespace IL2CPP
         template<typename T>
         T GetPropertyValue(const char* m_pPropertyName)
         {
-            #ifndef UNITY_VERSION_2022_3_62F2
-                Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
-                if (pProperty && pProperty->m_pGet)
-                    return reinterpret_cast<T(UNITY_CALLING_CONVENTION)(void*)>(pProperty->m_pGet->m_pMethodPointer)(this);
-            #else
-                std::string m_pGetterName("get_");
-                m_pGetterName.append(m_pPropertyName);
-                return CallMethodSafe<T>(m_pGetterName.c_str());
-            #endif
+#ifndef UNITY_VERSION_2022_3_62F2
+            Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
+            if (pProperty && pProperty->m_pGet)
+                return reinterpret_cast<T(UNITY_CALLING_CONVENTION)(void*)>(pProperty->m_pGet->m_pMethodPointer)(this);
+#else
+            std::string m_pGetterName("get_");
+            m_pGetterName.append(m_pPropertyName);
+            return CallMethodSafe<T>(m_pGetterName.c_str());
+#endif
 
             T tDefault = {};
             return tDefault;
@@ -562,15 +562,15 @@ namespace IL2CPP
         template<typename T>
         void SetPropertyValue(const char* m_pPropertyName, T m_tValue)
         {
-            #ifndef UNITY_VERSION_2022_3_62F2
-                Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
-                if (pProperty && pProperty->m_pSet)
-                    return reinterpret_cast<void(UNITY_CALLING_CONVENTION)(void*, T)>(pProperty->m_pSet->m_pMethodPointer)(this, m_tValue);
-            #else
-                std::string m_pSetterName("set_");
-                m_pSetterName.append(m_pPropertyName);
-                CallMethodSafe<void, T>(m_pSetterName.c_str(), m_tValue);
-            #endif
+#ifndef UNITY_VERSION_2022_3_62F2
+            Unity::il2cppPropertyInfo* pProperty = reinterpret_cast<Unity::il2cppPropertyInfo * (IL2CPP_CALLING_CONVENTION)(void*, const char*)>(Functions.m_ClassGetPropertyFromName)(m_Object.m_pClass, m_pPropertyName);
+            if (pProperty && pProperty->m_pSet)
+                return reinterpret_cast<void(UNITY_CALLING_CONVENTION)(void*, T)>(pProperty->m_pSet->m_pMethodPointer)(this, m_tValue);
+#else
+            std::string m_pSetterName("set_");
+            m_pSetterName.append(m_pPropertyName);
+            CallMethodSafe<void, T>(m_pSetterName.c_str(), m_tValue);
+#endif
         }
 
         template<typename T>
