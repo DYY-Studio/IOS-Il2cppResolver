@@ -73,7 +73,7 @@
 #include "Unity/Structures/il2cppArray.hpp"
 #include "Unity/Structures/il2cppDictionary.hpp"
 #include "Unity/Structures/Engine.hpp"
-#include "Unity/Structures/System_String.hpp"
+#include "Unity/Structures/System_String.mm"
 
 // IL2CPP Utils
 #include "Utils/Hash.hpp"
