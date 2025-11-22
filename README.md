@@ -45,6 +45,7 @@ For more usage check the [wiki](https://github.com/Batchhh/IOS-Il2cppResolver/wi
 * Add a convenient function to make `Il2cppArray` (`Unity::il2cppArray::Create`)
 * Add functions for inflating generic methods / classes (`IL2CPP::Helper::InflateGenericMethod/InflateGenericClass`), inspired by [frida-il2cpp-bridge](https://github.com/vfsfitvnm/frida-il2cpp-bridge)
 * Add functions to find nested classes (`IL2CPP::Class::Utils::GetNestedClass`), inspired by [frida-il2cpp-bridge](https://github.com/vfsfitvnm/frida-il2cpp-bridge)
+* Allow to use custom runtime api address map instead of searching EXPORT table for new Unity versions that hide the EXPORT.
 
 ## Authors
 
